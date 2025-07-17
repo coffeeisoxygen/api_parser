@@ -28,15 +28,22 @@ class Member(BaseModel):
     allow_no_sign: bool = Field(description="Izinkan request tanpa signature")
 
 
-class MemberRequestWithSignature(BaseModel):
+class RequestConfig(BaseModel):
+    model_config = {"from_attributes": True, "extra": "allow"}
+
+
+class MemberRequest(RequestConfig):
     memberid: str
     product: str
+    dest: str
+    refid: str
+
+
+class MemberRequestWithSignature(MemberRequest):
     signature: str
 
 
-class MemberRequestWithoutSignature(BaseModel):
-    memberid: str
-    product: str
+class MemberRequestWithoutSignature(MemberRequest):
     pin: str
     password: str
 
