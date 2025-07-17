@@ -9,3 +9,11 @@ def test_loguru_integration(caplog):
     assert "Hallo info message" in caplog.text
     assert "Hallo error message" in caplog.text
     assert "Hallo debug message" in caplog.text
+
+
+def test_log_output(caplog):
+    logger.info("hello from loguru")
+    assert "hello from loguru" in caplog.text
+
+    logger.info("hello from loguru")
+    assert "hello from loguru" in caplog.text
