@@ -53,3 +53,5 @@ backup/
 .reports/allure/
 .reports/
 ./sample/
+./registry/
+registry/
