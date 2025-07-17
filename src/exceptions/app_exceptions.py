@@ -105,3 +105,15 @@ class AppException:
                 status_code=HTTPStatus.UNAUTHORIZED,
                 context={"message": "Invalid Signature", "received": received_sign},
             )
+
+    class ModuleNotFoundError(AppExceptionError):
+        """Exception raised when a module is not found."""
+
+        def __init__(self, module_code: str):
+            super().__init__(status_code=404, context={"module": module_code})
+
+    class ProductNotFoundError(AppExceptionError):
+        """Exception raised when a product is not found."""
+
+        def __init__(self, product_code: str):
+            super().__init__(status_code=404, context={"product": product_code})

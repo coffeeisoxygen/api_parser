@@ -22,13 +22,14 @@ class ServiceResult:
     def __init__(self, arg: Any):
         if isinstance(arg, AppExceptionError):
             self.success = False
+            self.value = arg  # Simpan exception di value/data
             self.exception_case = arg.exception_case
             self.status_code = arg.status_code
         else:
             self.success = True
+            self.value = arg
             self.exception_case = None
             self.status_code = None
-        self.value = arg
 
     def __str__(self):
         return "[Success]" if self.success else f'[Exception] "{self.exception_case}"'
@@ -50,7 +51,11 @@ class ServiceResult:
     @property
     def data(self):
         """Akses langsung data jika success, kalau tidak akan None."""
-        return self.value if self.success else None
+        return (
+            self.value
+            if self.success or isinstance(self.value, AppExceptionError)
+            else None
+        )
 
 
 def caller_info() -> str:
