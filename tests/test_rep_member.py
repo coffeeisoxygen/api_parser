@@ -1,9 +1,5 @@
-import logging
-
+from loguru import logger
 from src.schemas.sch_member import Member
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 def test_member_repo_all(member_repo):

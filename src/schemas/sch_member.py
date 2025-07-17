@@ -21,7 +21,8 @@ class Member(BaseModel):
     allow_no_sign: bool = Field(description="Izinkan request tanpa signature")
 
     @field_validator("pin", mode="before")
-    def pin_to_str(cls, v):
+    @classmethod
+    def pin_to_str(cls, v: str | None) -> str:
         return str(v) if v is not None else ""
 
 
