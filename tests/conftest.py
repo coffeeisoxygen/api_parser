@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 from loguru import logger
 from src.repos.rep_member import MemberRepoYaml
+from src.repos.rep_module import ModuleRepoYaml
 
 
 # Auto-configure Loguru untuk test session
@@ -38,3 +39,15 @@ def dummy_member_path() -> Path:
 @pytest.fixture()
 def member_repo(dummy_member_path) -> MemberRepoYaml:
     return MemberRepoYaml(file_path=dummy_member_path)
+
+
+# path ke Yaml dummy untuk modul dan produk
+@pytest.fixture(scope="session")
+def dummy_module_path() -> Path:
+    return Path("tests/data/modules_dummy.yaml")
+
+
+# Repo dengan data dummy untuk modul dan produk
+@pytest.fixture()
+def module_repo(dummy_module_path) -> ModuleRepoYaml:
+    return ModuleRepoYaml(file_path=dummy_module_path)
