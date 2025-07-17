@@ -22,46 +22,51 @@ class ServiceResult:
     def __init__(self, arg: Any):
         if isinstance(arg, AppExceptionError):
             self.success = False
-            self.value = arg  # Simpan exception di value/data
-            self.exception_case = arg.exception_case
-            self.status_code = arg.status_code
+            self.exception: AppExceptionError | None = arg
+            self.value = None
         else:
             self.success = True
             self.value = arg
-            self.exception_case = None
-            self.status_code = None
+            self.exception: AppExceptionError | None = None
 
-    def __str__(self):
-        return "[Success]" if self.success else f'[Exception] "{self.exception_case}"'
-
-    def __repr__(self):
-        return (
-            "<ServiceResult Success>"
-            if self.success
-            else f"<ServiceResult AppException {self.exception_case}>"
-        )
-
-    def __enter__(self):
-        return self.value
-
-    def __exit__(self, *kwargs):
-        # Tambahkan cleanup jika perlu (opsional)
-        pass
+    @property
+    def error(self):
+        return self.exception if not self.success else None
 
     @property
     def data(self):
-        """Akses langsung data jika success, kalau tidak akan None."""
-        return (
-            self.value
-            if self.success or isinstance(self.value, AppExceptionError)
-            else None
-        )
+        """Akses langsung data jika success, None jika gagal."""
+        return self.value if self.success else None
+
+    def __str__(self):
+        if self.success:
+            return "[Success]"
+        else:
+            return f'[Exception] "{type(self.exception).__name__}: {self.exception}"'
+
+    def __repr__(self):
+        if self.success:
+            return "<ServiceResult Success>"
+        else:
+            return f"<ServiceResult AppException {type(self.exception).__name__}>"
+
+    def __enter__(self):
+        return self.value if self.success else self.exception
+
+    def __exit__(self, *kwargs) -> None:
+        """Context manager support for ServiceResult."""
+        pass
 
 
 def caller_info() -> str:
     """Ambil informasi lokasi pemanggil (debug helper)."""
     info = inspect.getframeinfo(inspect.stack()[2][0])
     return f"{info.filename}:{info.function}:{info.lineno}"
+
+
+class NoServiceResultExceptionError(Exception):
+    def __init__(self):
+        super().__init__("ServiceResult contains no exception to raise")
 
 
 def handle_result(result: ServiceResult, log_success: bool = False):
@@ -73,7 +78,10 @@ def handle_result(result: ServiceResult, log_success: bool = False):
     if not result.success:
         with result as exception:
             logger.error(f"[Service Error] {exception} at {caller_info()}")
-            raise exception
+            if exception is not None:
+                raise exception
+            else:
+                raise NoServiceResultExceptionError()
     else:
         if log_success:
             logger.info(f"[Service OK] from {caller_info()}")

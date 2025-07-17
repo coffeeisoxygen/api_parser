@@ -21,7 +21,14 @@ class AppExceptionError(Exception):
         """
         self.status_code = status_code
         self.context = context or {}
-        self.exception_case = self.__class__.__name__
+
+    @property
+    def error(self):
+        return self
+
+    @property
+    def exception_case(self):
+        return self.__class__.__name__
 
     def __str__(self):
         """String representation of the exception.

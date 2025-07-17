@@ -1,4 +1,7 @@
-"""Fungsi untuk membuat dan memverifikasi signature OtomaX."""
+"""Fungsi untuk membuat dan memverifikasi signature OtomaX.
+
+Built with ❤️ by Hasan Maki and ChatGPT
+"""
 
 import base64
 import hashlib
@@ -6,7 +9,7 @@ import hashlib
 from fastapi import Depends
 
 from src.exceptions.app_exceptions import AppException
-from src.schemas.sch_member import Member, MemberRequestWithSignature
+from src.schemas.sch_member import MemberRequestWithSignature
 from src.services.srv_member import MemberService
 from src.services.srv_result import handle_result
 
@@ -28,8 +31,9 @@ def verify_signature(
     """Validasi signature OtomaX terhadap member berdasarkan pin/password."""
     member = handle_result(member_service.get_by_id(request.memberid))
 
-    if not isinstance(member, Member):
-        raise member  # fallback ke AppExceptionError jika handle_result ngirim error
+    # Ensure member is valid before accessing attributes
+    if member is None or not hasattr(member, "pin") or not hasattr(member, "password"):
+        raise AppException.MemberNotFoundError(request.memberid)
 
     expected = generate_signature(
         memberid=request.memberid,

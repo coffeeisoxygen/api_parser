@@ -20,7 +20,7 @@ def test_get_by_code_found(module_repo):
     assert result.success
     assert result.data is not None
     assert hasattr(result.data, "code")
-    assert result.data.code == "DIGIPOS" # type: ignore
+    assert result.data.code == "DIGIPOS"  # type: ignore
 
 
 def test_get_by_code_not_found(module_repo):
