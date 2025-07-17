@@ -164,6 +164,14 @@ log_cli_format = "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
 log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 log_auto_indent = true
 markers = [
+    "unit: mark test as unit test",
+    "integration: mark test as integration test",
+    "slow: mark test as slow",
+    "performance: mark test as performance test",
+    "regression: mark test as regression test",
+    "smoke: mark test as smoke test",
+    "api: mark test as API test",
+    "ui: mark test as UI test",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",

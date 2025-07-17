@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from src.config.settings import settings
+from src.config.base_settings import settings
 from src.schemas.sch_member import Member
 
 # Default path for member YAML file
