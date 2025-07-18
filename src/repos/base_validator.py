@@ -3,7 +3,7 @@
 from collections.abc import Callable, Iterable
 from typing import Any
 
-from src.exceptions.repo_exceptions import DuplicateItemError
+from src.repos.base_repo import AppException
 
 
 def validate_unique(
@@ -27,5 +27,5 @@ def validate_unique(
     for item in items:
         key = key_fn(item)
         if key in seen:
-            raise DuplicateItemError(name, key)
+            raise AppException.DuplicateItemError(name, key)
         seen.add(key)

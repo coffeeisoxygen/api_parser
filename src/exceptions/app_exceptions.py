@@ -81,7 +81,14 @@ class AppException:
             self.unique_name = name
             self.unique_key = key
 
-    class Module
+    class ModelNotSetError(AppExceptionError):
+        """Model belum di-set di subclass BaseYamlRepo."""
+
+        def __init__(self):
+            super().__init__(
+                500, {"message": "Model belum di-set di subclass BaseYamlRepo"}
+            )
+
 
 def app_exception_handler(exc: AppExceptionError):
     """Handler untuk AppExceptionError, mengembalikan JSON response."""

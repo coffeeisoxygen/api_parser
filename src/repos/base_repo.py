@@ -67,7 +67,7 @@ class BaseYamlRepo(Generic[T]):  # noqa: UP046
             )
 
             if self.model is None:
-                raise AppException.ModelNotSetError()
+                raise AppException.ModelNotSetError()  # noqa: TRY301
             return [self.model(**item) for item in raw_items]
         except Exception:
             logger.exception(f"[YAML Repo] Gagal load dari {self.file_path}")
