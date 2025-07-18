@@ -24,13 +24,13 @@ class MemberRepoYaml(BaseYamlRepo[Member]):
 
     # Base sudah punya generic get_by()
     # tetap definisikan secara eksplisit buat clarity + IDE support
-    def get_by_id(self, memberid: str) -> Member | None:
+    def get_by_memberid(self, memberid: str) -> Member | None:
         return next((m for m in self._items if m.memberid == memberid), None)
 
-    def get_by_ip(self, ip: str) -> Member | None:
+    def get_by_memberip(self, ip: str) -> Member | None:
         return next((m for m in self._items if m.ip == ip), None)
 
-    def get_listip(self) -> list[str]:
+    def get_allmemberip(self) -> list[str]:
         """Get list of unique IPs from members."""
         return list({m.ip for m in self._items if m.ip})
 

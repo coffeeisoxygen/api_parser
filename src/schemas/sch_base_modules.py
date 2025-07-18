@@ -14,8 +14,8 @@ class Module(BaseModel):
         "extra": "allow",
     }
 
+    moduleid: str = Field(..., description="Kode unik modul (ex: DIGIPOS)")
     name: str = Field(..., description="Nama modul (ex: Digipos)")
-    code: str = Field(..., description="Kode unik modul (ex: DIGIPOS)")
     description: str | None = Field(..., description="Deskripsi singkat tentang modul")
     base_url: str = Field(..., description="Base URL untuk modul (ex: http://...)")
     timeout: int = Field(5, description="Timeout dalam detik (default 5)")
