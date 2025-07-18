@@ -27,6 +27,21 @@ class AppExceptionError(Exception):
 
 
 class AppException:
+    """Kumpulan exception logic internal (bukan fatal) untuk aplikasi.
+
+    Semua exception di sini merupakan turunan dari AppExceptionError dan digunakan untuk
+    error yang bisa di-handle di level service/route. Exception ini akan di-handle oleh
+    handler khusus dan mengembalikan response JSON yang sesuai ke frontend/admin panel.
+
+    Contoh error yang didefinisikan:
+    - IPNotFoundError: IP client tidak terdaftar di registry member.
+    - MemberNotFoundError: Member tidak ditemukan.
+    - YamlFileNotFoundError: File YAML tidak ditemukan.
+    - DuplicateItemError: Ada item duplikat pada registry/data.
+
+    Exception ini aman untuk ditampilkan/log di frontend/admin.
+    """
+
     class IPNotFoundError(AppExceptionError):
         """IP client tidak terdaftar di member registry."""
 
@@ -36,6 +51,7 @@ class AppException:
             )
 
     class MemberNotFoundError(AppExceptionError):
+        """Member tidak ditemukan berdasarkan ID."""
         def __init__(self, member_id: str):
             super().__init__(
                 HTTPStatus.NOT_FOUND,
@@ -43,15 +59,18 @@ class AppException:
             )
 
     class YamlFileNotFoundError(AppExceptionError):
+        """YAML file tidak ditemukan."""
         def __init__(self, path: str):
             super().__init__(500, {"message": f"YAML file tidak ditemukan: {path}"})
 
     class DuplicateItemError(AppExceptionError):
+        """Ada item duplikat pada registry/data."""
         def __init__(self, name: str, key: str):
             super().__init__(400, {"message": f"Duplicate {name}: {key}"})
 
 
 def app_exception_handler(exc: AppExceptionError):
+    """Handler untuk AppExceptionError, mengembalikan JSON response."""
     return JSONResponse(
         status_code=exc.status_code,
         content={"app_exception": exc.exception_case, "context": exc.context},
