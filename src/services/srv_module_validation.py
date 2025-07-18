@@ -1,6 +1,7 @@
-# src/services/srv_module.py
+"""ini validator module."""
+
 from src.config.app_config import settings
-from src.exceptions.oto_exceptions import OtoException, OtoExceptionError
+from src.exceptions.oto_exceptions import OtoException
 from src.repos.rep_module import ModuleRepoYaml
 from src.services.srv_base import AppService
 from src.services.srv_result import ServiceResult
@@ -16,10 +17,5 @@ class ModuleService(AppService):
         if not module:
             return ServiceResult(OtoException.ModuleNotFoundError(code))
         if not getattr(module, "is_active", False):
-            return ServiceResult(
-                OtoExceptionError(
-                    status_code=403,
-                    context={"code": code, "message": f"Modul '{code}' tidak aktif."},
-                )
-            )
+            return ServiceResult(OtoException.ModuleIsInActiveError(code))
         return ServiceResult(module)

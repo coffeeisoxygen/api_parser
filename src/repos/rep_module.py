@@ -6,6 +6,7 @@ Made by Hasan Maki and ChatGPT
 """
 
 from pathlib import Path
+from urllib.parse import urlparse
 
 from src.config.app_config import settings
 from src.repos.base_repo import BaseYamlRepo
@@ -40,18 +41,15 @@ class ModuleRepoYaml(BaseYamlRepo[Module]):
             (m for m in self._items if getattr(m, "moduleid", None) == moduleid), None
         )
 
-    def get_all_module_listip(self) -> list[str] | None:
-        """Get a list of unique IP addresses from modules.
-
-        This method retrieves all unique IP addresses from the modules in the repository.
-
-        Returns:
-            list[str] | None: Daftar IP yang ditemukan atau None jika tidak ada. akan di handle di level service untuk none.
-        """
-        return (
-            list({m.base_url for m in self._items if getattr(m, "base_url", None)})
-            or None
-        )
+    def get_all_module_listip(self) -> list[str]:
+        """Ambil list IP/hostname dari semua module base_url."""
+        hostnames = []
+        for mod in self._items:
+            if mod.base_url:
+                parsed = urlparse(mod.base_url)
+                if parsed.hostname:
+                    hostnames.append(parsed.hostname)
+        return list(set(hostnames)) or []
 
     def get_all_active_only_module(self) -> list[Module] | None:
         """Get all active modules only.

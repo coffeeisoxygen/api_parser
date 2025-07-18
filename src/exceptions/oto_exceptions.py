@@ -40,6 +40,21 @@ class OtoException:
             self.oto_status = 404
             self.context["message"] = f"Module '{code}' tidak ditemukan"
 
+    class ModuleIsInActiveError(OtoExceptionError):
+        """Exception yang di-raise ketika modul tidak aktif.
+
+        Exception ini digunakan untuk menandai bahwa modul yang diminta
+        tidak aktif dan tidak dapat digunakan.
+
+        Args:
+            OtoExceptionError (_type_): Kelas dasar untuk exception OtomaX.
+        """
+
+        def __init__(self, code: str):
+            super().__init__(404, {"code": code})
+            self.oto_status = 404
+            self.context["message"] = f"Module '{code}' tidak ditemukan"
+
     class InvalidTrxCombinationError(OtoExceptionError):
         """Exception yang di-raise ketika kombinasi transaksi tidak valid."""
 
@@ -47,3 +62,11 @@ class OtoException:
             super().__init__(422, {"message": message})
             self.oto_status = 422
             self.context["message"] = message
+
+    class UnknownModuleValidationError(OtoExceptionError):
+        """Exception untuk error validasi modul yang tidak diketahui."""
+
+        def __init__(self, code: str | None = None):
+            super().__init__(500, {"code": code})
+            self.oto_status = 500
+            self.context["message"] = "Unknown module validation error"

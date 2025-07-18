@@ -18,7 +18,9 @@ class WhitelistIPService(AppService):
     def get_all_ip(self) -> ServiceResult:
         try:
             member_ips = self.member_repo.get_all_memberip() or []
+            self.logger.info(f"Fetched member IPs: {member_ips}")
             module_urls = self.module_repo.get_all_module_listip() or []
+            self.logger.info(f"Fetched module URLs: {module_urls}")
             # Ekstrak hanya host/IP dari base_url
             module_ips = []
             for url in module_urls:
@@ -26,9 +28,16 @@ class WhitelistIPService(AppService):
                     parsed = urlparse(url)
                     if parsed.hostname:
                         module_ips.append(parsed.hostname)
+                        self.logger.info(
+                            f"Extracted hostname from module URL '{url}': {parsed.hostname}"
+                        )
                     else:
                         module_ips.append(url)  # fallback jika bukan URL
+                        self.logger.info(
+                            f"Module URL '{url}' is not a valid URL, using as is."
+                        )
             all_ip = list(set(member_ips + module_ips))
+            self.logger.info(f"Combined whitelist IPs: {all_ip}")
             if not all_ip:
                 return ServiceResult(
                     AppException.IPNotFoundError("Tidak ada IP yang ditemukan")
