@@ -1,5 +1,7 @@
 """load ipaddress dari members dan modules untuk whitelist ip yg bisa akses , dan akan di terapkan di level router."""
 
+from urllib.parse import urlparse
+
 from src.exceptions.app_exceptions import AppException
 from src.repos.rep_member import MemberRepoYaml
 from src.repos.rep_module import ModuleRepoYaml
@@ -16,7 +18,16 @@ class WhitelistIPService(AppService):
     def get_all_ip(self) -> ServiceResult:
         try:
             member_ips = self.member_repo.get_all_memberip() or []
-            module_ips = self.module_repo.get_all_module_listip() or []
+            module_urls = self.module_repo.get_all_module_listip() or []
+            # Ekstrak hanya host/IP dari base_url
+            module_ips = []
+            for url in module_urls:
+                if url:
+                    parsed = urlparse(url)
+                    if parsed.hostname:
+                        module_ips.append(parsed.hostname)
+                    else:
+                        module_ips.append(url)  # fallback jika bukan URL
             all_ip = list(set(member_ips + module_ips))
             if not all_ip:
                 return ServiceResult(
