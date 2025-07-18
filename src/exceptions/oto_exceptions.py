@@ -10,12 +10,13 @@ class OtoExceptionError(AppExceptionError):
         """Custom render untuk FastAPI exception handler OtomaX."""
         status = getattr(self, "oto_status", 91)  # default unknown error
         message = self.context.get("message") or self.__class__.__name__
-        dest = self.context.get("dest", "")
-        refid = self.context.get("refid", "")
-        return PlainTextResponse(
-            content=f"status={status}&message={message}&dest={dest}&refid={refid}",
-            status_code=self.status_code,
-        )
+        # Hanya tampilkan dest/refid jika ada di context
+        parts = [f"status={status}", f"message={message}"]
+        if "dest" in self.context:
+            parts.append(f"dest={self.context['dest']}")
+        if "refid" in self.context:
+            parts.append(f"refid={self.context['refid']}")
+        return PlainTextResponse(content="&".join(parts), status_code=self.status_code)
 
 
 class OtoException:
@@ -28,3 +29,9 @@ class OtoException:
             super().__init__(status_code=404, context={"code": code})
             self.oto_status = 404
             self.context["message"] = f"Modul dengan kode '{code}' tidak ditemukan."
+
+        def render(self):
+            return PlainTextResponse(
+                content=f"status={self.oto_status}&message={self.context['message']}",
+                status_code=self.status_code,
+            )

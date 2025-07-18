@@ -1,5 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import PlainTextResponse
 from guard import SecurityDecorator, SecurityMiddleware
 
 from src.config.log_settings import initialize_logging
@@ -30,6 +32,20 @@ app.include_router(transaction_router)
 @app.exception_handler(OtoExceptionError)
 async def oto_exception_handler(request: Request, exc: OtoExceptionError):
     return exc.render()
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    # Ambil error message dari exc.errors()
+    messages = []
+    for err in exc.errors():
+        loc = ".".join(str(loc_part) for loc_part in err["loc"])
+        msg = err["msg"]
+        messages.append(f"{loc}: {msg}")
+    # Gabungkan pesan error
+    message = "; ".join(messages)
+    # Format plain text OtomaX
+    return PlainTextResponse(content=f"status=422&message={message}", status_code=422)
 
 
 # NOTE : aktifin mereka kalau nanti udah punya FE
