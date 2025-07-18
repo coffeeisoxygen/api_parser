@@ -89,6 +89,12 @@ class AppException:
                 500, {"message": "Model belum di-set di subclass BaseYamlRepo"}
             )
 
+    class RepoFilePathMissingError(AppExceptionError):
+        """Repo tidak punya file_path attribute."""
+
+        def __init__(self):
+            super().__init__(400, {"message": "Repo tidak punya file_path"})
+
 
 def app_exception_handler(exc: AppExceptionError):
     """Handler untuk AppExceptionError, mengembalikan JSON response."""

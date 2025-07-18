@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 import aiofiles
 import yaml
@@ -13,7 +13,7 @@ from src.utils.mylogger import logger
 T = TypeVar("T")
 
 
-class BaseYamlRepo(Generic[T]):
+class BaseYamlRepo[T]:
     # --- konfigurasi default (override di subclass) ---
     yaml_key: str = "items"
     model: type[T] | None = None
@@ -63,13 +63,12 @@ class BaseYamlRepo(Generic[T]):
                         f"[YAML Repo] {self.unique_name} #{idx} invalid: {e}"
                     )
                     invalid_count += 1
-
             logger.info(
                 f"Loaded {len(valid_items)} {self.yaml_key} dari {self.file_path}"
             )
             self.invalid_count = invalid_count
             self.last_loaded_at = datetime.now()
-            return valid_items
+            return valid_items  # noqa: TRY300
 
         except Exception:
             logger.exception(f"[YAML Repo] Gagal load dari {self.file_path}")
@@ -88,4 +87,5 @@ class BaseYamlRepo(Generic[T]):
         for item in self._items:
             if key_fn(item) == value:
                 return item
+        raise AppException.ItemNotFoundError(self.unique_name, value)
         raise AppException.ItemNotFoundError(self.unique_name, value)

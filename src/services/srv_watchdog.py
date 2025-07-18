@@ -8,6 +8,7 @@ from pathlib import Path
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
+from src.exceptions.app_exceptions import AppException
 from src.utils.mylogger import logger
 
 
@@ -45,7 +46,7 @@ class YamlReloadHandler(FileSystemEventHandler):
 def watch_yaml_repo(repo):
     """Aktifkan file watcher untuk satu repo berbasis file YAML."""
     if not hasattr(repo, "file_path"):
-        raise ValueError("Repo tidak punya file_path")
+        raise AppException.RepoFilePathMissingError()
 
     loop = asyncio.get_event_loop()
     handler = YamlReloadHandler(repo, loop)
