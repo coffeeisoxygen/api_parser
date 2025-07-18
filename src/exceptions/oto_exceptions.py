@@ -17,15 +17,15 @@ class OtoExceptionError(AppExceptionError):
         message = self.context.get("message") or self.__class__.__name__
         parts = [f"status={status}", f"message={message}"]
 
-        for k in ("dest", "refid"):
-            if k in self.context:
-                parts.append(f"{k}={self.context[k]}")
+        parts.extend(
+            f"{k}={self.context[k]}" for k in ("dest", "refid") if k in self.context
+        )
 
         return PlainTextResponse(content="&".join(parts), status_code=self.status_code)
 
 
 class OtoException:
-    class ModuleNotFound(OtoExceptionError):
+    class ModuleNotFoundError(OtoExceptionError):
         def __init__(self, code: str):
             super().__init__(404, {"code": code})
             self.oto_status = 404
