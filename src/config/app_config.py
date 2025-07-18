@@ -6,10 +6,8 @@ from typing import Any
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-
-class RegistryFileNotFoundError(FileNotFoundError):
-    def __init__(self, name: str, path: Path) -> None:
-        super().__init__(f"[Startup Error] File '{name}' tidak ditemukan: {path}")
+from src.exceptions.system_exceptions import RegistryFileNotFoundError
+from src.utils.mylogger import logger
 
 
 class AppConfiguration(BaseSettings):
@@ -47,7 +45,8 @@ class AppConfiguration(BaseSettings):
         }
         for name, path in paths.items():
             if not path.exists():
-                raise RegistryFileNotFoundError(name, path)
+                logger.error(f"[Startup] File {name} tidak ditemukan: {path}")
+                raise RegistryFileNotFoundError(name, str(path))
 
 
 settings = AppConfiguration()
