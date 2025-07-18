@@ -10,7 +10,7 @@ def _validate_product_from_repo(
     request: Request, product_code: str = Query(..., alias="product")
 ) -> Product:
     repo = request.app.state.repos["product"]
-    product = repo.get_by_product_code(product_code)
+    product = repo.get_by_code(product_code)
 
     if not product:
         raise HTTPException(404, f"Product '{product_code}' tidak ditemukan")
