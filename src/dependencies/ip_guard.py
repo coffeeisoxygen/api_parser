@@ -19,6 +19,7 @@ def ip_whitelist_guard(
     request: Request,
     service: WhitelistIPService = Depends(get_whitelist_service),  # noqa: B008
 ):
+    """Guard to check if the client's IP is whitelisted."""
     if request.client is None:
         raise HTTPException(status_code=400, detail="Tidak dapat menentukan IP client")
     client_ip = request.client.host
