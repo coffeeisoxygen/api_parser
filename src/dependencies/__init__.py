@@ -1,4 +1,4 @@
-from src.dependencies.dep_mapping import DepValidMapping
+from src.dependencies.deps_mapping import DepValidMapping
 from src.dependencies.deps_member import DepValidMember
 from src.dependencies.deps_module import DepValidModule
 from src.dependencies.deps_product import DepValidProduct

@@ -2,9 +2,14 @@
 
 from fastapi import APIRouter, Depends
 from src.config.log_settings import logger
-from src.dependencies import DepValidMember, DepValidModule, DepWhitelist
-from src.dependencies.deps_product import DepValidProduct
-from src.dependencies.deps_signature import DepValidSignature
+from src.dependencies import (
+    DepValidMapping,
+    DepValidMember,
+    DepValidModule,
+    DepValidProduct,
+    DepValidSignature,
+    DepWhitelist,
+)
 from src.schemas.sch_transaction import TrxRequest
 
 router = APIRouter()
@@ -17,11 +22,12 @@ async def trx_with_module(
     member: DepValidMember,
     product: DepValidProduct,
     valid_signature: DepValidSignature,
+    valid_mapping: DepValidMapping,
     query: TrxRequest = Depends(),
 ):
     """Handle transaction request dengan validasi module, member, product, whitelist, dan signature."""
     logger.info(
-        f"[TRX] Module: {module.moduleid}, Member: {member.memberid}, Product: {product.code}, Query: {query.model_dump()}, Status: success"
+        f"[TRX] Module: {module.moduleid}, Member: {member.memberid}, Product: {product.code}, Query: {query.model_dump()}, Valid Mapping: {valid_mapping}, Status: success"
     )
     return {
         "module_code": module.moduleid,

@@ -35,15 +35,18 @@ def _validate_signature(
             f"Parameter tidak lengkap: {', '.join(missing)}"
         )
 
-    product = query["product"]
-    dest = query["dest"]
-    refid = query["refid"]
-    sign = query["sign"]
+    product = query["product"].strip()
+    dest = query["dest"].strip()
+    refid = query["refid"].strip()
+    sign = query["sign"].strip()
 
+    logger.info(f"member.pin: {member.pin}, member.password: {member.password}")
     logger.info(f"Received signature: {sign}")
-
+    logger.info(
+        f"Params sebelum generate signature: memberid={member.memberid.upper()}, product={product}, dest={dest}, refid={refid}, pin={member.pin}, password={member.password}"
+    )
     expected = _generate_signature(
-        member.memberid, product, dest, refid, member.pin, member.password
+        member.memberid.upper(), product, dest, refid, member.pin, member.password
     )
 
     logger.info(
@@ -59,3 +62,5 @@ def _validate_signature(
 
 
 DepValidSignature = Annotated[bool, Depends(_validate_signature)]
+
+# NOTE: kalau ada yang aneh atau miss , ini pasti gara gara uppercase dan lowercase pada parameter tertentu, jadi make sure jeli dan standarisasi penulisan parameter
