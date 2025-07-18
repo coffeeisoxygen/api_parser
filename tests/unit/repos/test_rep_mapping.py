@@ -1,6 +1,6 @@
 import pytest
 from src.repos.rep_mapping import MappingRepoYaml
-from src.schemas.sch_base_mappings import ProductModuleMapping
+from src.schemas.sch_mapping import ProductModuleMapping
 
 
 @pytest.mark.unit

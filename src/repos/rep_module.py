@@ -9,7 +9,7 @@ from pathlib import Path
 
 from src.config.app_config import settings
 from src.repos.base_repo import BaseYamlRepo
-from src.schemas.sch_base_modules import Module
+from src.schemas.sch_module import Module
 
 # Default path for module YAML file
 default_path = settings.module_yaml_path

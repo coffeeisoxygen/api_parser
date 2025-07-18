@@ -7,7 +7,7 @@ from pathlib import Path
 
 from src.config.app_config import settings
 from src.repos.base_repo import BaseYamlRepo
-from src.schemas.sch_base_products import Product
+from src.schemas.sch_product import Product
 
 # Default path for product YAML file
 default_path = settings.product_yaml_path

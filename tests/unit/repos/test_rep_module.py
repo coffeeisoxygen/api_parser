@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 from src.repos.rep_module import ModuleRepoYaml
-from src.schemas.sch_base_modules import Module
+from src.schemas.sch_module import Module
 
 
 def test_get_by_moduleid(module_repo: ModuleRepoYaml):

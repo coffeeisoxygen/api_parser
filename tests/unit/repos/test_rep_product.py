@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from src.schemas.sch_base_products import Product
+from src.schemas.sch_product import Product
 
 
 def test_get_by_code(product_repo):
