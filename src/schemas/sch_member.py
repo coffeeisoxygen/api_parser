@@ -9,6 +9,8 @@ StrFromInt = Annotated[
     str, BeforeValidator(lambda v: str(v) if isinstance(v, int) else v)
 ]
 
+# convert ipaddress to Str Again after validation
+
 
 class Member(BaseModel):
     model_config = {"str_strip_whitespace": True, "extra": "forbid"}
@@ -21,3 +23,9 @@ class Member(BaseModel):
         False, description="Apakah transaksi tanpa tanda tangan diizinkan"
     )
     is_active: bool = Field(default=True, description="Status aktif anggota")
+
+    def model_dump(self, *args, **kwargs):
+        data = super().model_dump(*args, **kwargs)
+        # Pastikan ip dikonversi ke string
+        data["ip"] = str(self.ip)
+        return data

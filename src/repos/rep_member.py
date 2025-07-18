@@ -7,7 +7,7 @@ from pathlib import Path
 
 from src.config.app_config import settings
 from src.repos.base_repo import BaseYamlRepo
-from src.schemas.sch_base_member import Member
+from src.schemas.sch_member import Member
 
 # Default path for member YAML file
 default_path = settings.member_yaml_path
@@ -74,6 +74,11 @@ class MemberRepoYaml(BaseYamlRepo[Member]):
         """
         return next((m for m in self._items if m.ip == ip), None)
 
+    @staticmethod
+    def _ip_to_str(ip) -> str:
+        """Helper untuk konversi ip ke string."""
+        return str(ip) if ip is not None else ""
+
     def get_list_memberip(self) -> list[str]:
         """Get a list of all unique IPs from members.
 
@@ -82,7 +87,7 @@ class MemberRepoYaml(BaseYamlRepo[Member]):
         Returns:
             list[str]: Daftar IP yang ditemukan.
         """
-        return list({m.ip for m in self._items if m.ip})
+        return list({self._ip_to_str(m.ip) for m in self._items if m.ip})
 
     def get_all_memberip(self) -> list[str] | None:
         """Get all unique IPs from members.
@@ -92,7 +97,8 @@ class MemberRepoYaml(BaseYamlRepo[Member]):
         Returns:
             list[str] | None: Daftar IP yang ditemukan atau None jika tidak ada. akan di handle di level service untuk none.
         """
-        return list({m.ip for m in self._items if m.ip}) or None
+        ips = list({self._ip_to_str(m.ip) for m in self._items if m.ip})
+        return ips or None
 
     def get_all_active_only_member(self) -> list[Member] | None:
         """Get all active members only.
