@@ -10,7 +10,7 @@ from src.exceptions.exception_handlers import (
     RequestValidationError,
     global_exception_handler,
 )
-from src.guard_config.sec_config import config, guard_deco
+from src.config.sec_config import config, guard_deco
 from src.router.router_handler import register_debug_routers
 from src.router.transaction import router as transaction_router
 
