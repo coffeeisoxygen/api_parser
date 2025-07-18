@@ -1,60 +1,38 @@
 import uvicorn
-from fastapi import FastAPI, Request
-from fastapi.exceptions import RequestValidationError
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import PlainTextResponse
-from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
+from fastapi import Depends, FastAPI
+from guard import SecurityDecorator, SecurityMiddleware
 
-from router.digipos import router as digipos_router
 from src.config.log_settings import initialize_logging
+from src.config.security_settings import SecurityConfig
 from src.config.server_settings import get_uvicorn_config
+from src.dependencies.ip_guard import ip_whitelist_guard
 
 # Initialize logging configuration
 initialize_logging()
 app = FastAPI()
+config = SecurityConfig()
 
-
-def validation_exception_handler(request: Request, exc: RequestValidationError):
-    """Handle validation errors and return a custom plain text response.
-
-    Parameters
-    ----------
-    request : Request
-        The incoming HTTP request.
-    exc : RequestValidationError
-        The validation error exception.
-
-    Returns:
-    -------
-    PlainTextResponse
-        A response with status code 422 and a message indicating missing fields.
-    """
-    missing_fields = [err["loc"][-1] for err in exc.errors()]
-    message = f"{', '.join(missing_fields)} wajib diisi"
-    return PlainTextResponse(
-        content=f"status=91&message={message}",
-        status_code=HTTP_422_UNPROCESSABLE_ENTITY,
-    )
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
-
-# Include the Digipos router
-app.include_router(digipos_router)
-# app.add_exception_handler(RequestValidationError, validation_exception_handler)
+# Create decorator instance
+guard_deco = SecurityDecorator(config)
 
 
 @app.get("/")
+@guard_deco.require_ip(whitelist=["192.168.1.0/24", "127.0.0.1/24"])
 async def read_root():
     """Root endpoint for health check and welcome message."""
     return {"message": "Hello, World!"}
 
+
+@app.get("/trx", dependencies=[Depends(ip_whitelist_guard)])
+async def handle_trx():
+    return {"status": "success"}
+
+
+# Add global middleware
+app.add_middleware(SecurityMiddleware, config=config)
+
+# Required: Set decorator handler on app state
+app.state.guard_decorator = guard_deco
 
 if __name__ == "__main__":
     config = get_uvicorn_config()

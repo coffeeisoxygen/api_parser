@@ -9,6 +9,7 @@ requires-python = ">=3.12"
 
 dependencies = [
     "aiofiles>=24.1.0",
+    "fastapi-guard>=3.0.1",
     "fastapi[all]>=0.116.1",
     "loguru>=0.7.0",
 ]
