@@ -14,20 +14,14 @@ from src.schemas.sch_transaction import TrxRequest
 router = APIRouter()
 
 
+# src/routers/router_trx.py
+
+
 @router.get("/trx")
-async def trx_default(
-    _: DepWhitelist,
-    member: DepValidMember = None,
-    product: DepValidProduct = None,
-    valid_signature: DepValidSignature = None,
-    query: TrxRequest = Depends(),  # noqa: B008
-):
-    """Handler default trx tanpa module_code (untuk fallback legacy OtomaX)."""
+async def trx_default(_: DepWhitelist, query: TrxRequest = Depends()):
     logger.info("[TRX] Default handler (tanpa module)")
     return {
         "module_code": None,
-        "memberid": getattr(member, "memberid", None),
-        "product_code": getattr(product, "code", None),
         "query": query.model_dump(),
         "status": "success",
         "message": "Transaction via default handler",
@@ -41,9 +35,8 @@ async def trx_with_module(
     member: DepValidMember,
     product: DepValidProduct,
     valid_signature: DepValidSignature,
-    query: TrxRequest = Depends(),  # noqa: B008
+    query: TrxRequest = Depends(),
 ):
-    """Handler trx dengan module_code (direkomendasikan)."""
     logger.info(
         f"[TRX] Module: {module.moduleid}, Member: {member.memberid}, Product: {product.code}"
     )
