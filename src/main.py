@@ -1,9 +1,11 @@
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import PlainTextResponse
 from guard import SecurityDecorator, SecurityMiddleware
+from starlette.requests import Request
+from starlette.responses import PlainTextResponse
 
+from src.config.base_settings import settings
 from src.config.log_settings import initialize_logging
 from src.config.security_settings import SecurityConfig
 from src.config.server_settings import get_uvicorn_config
@@ -36,13 +38,12 @@ async def oto_exception_handler(request: Request, exc: OtoExceptionError):
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    # Ambil error message dari exc.errors()
+    # Gabungkan semua pesan error
     messages = []
     for err in exc.errors():
-        loc = ".".join(str(loc_part) for loc_part in err["loc"])
+        loc = ".".join(str(l) for l in err["loc"])
         msg = err["msg"]
         messages.append(f"{loc}: {msg}")
-    # Gabungkan pesan error
     message = "; ".join(messages)
     # Format plain text OtomaX
     return PlainTextResponse(content=f"status=422&message={message}", status_code=422)
@@ -57,7 +58,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 # async def item_not_found_handler(request: Request, exc: ItemNotFoundError):
 #     return app_exception_handler(exc)
 # Add global middleware
-app.add_middleware(SecurityMiddleware, config=config)
+if settings.app_mode != "development":
+    app.add_middleware(SecurityMiddleware, config=config)
+else:
+    # Bisa log info bahwa guard tidak diaktifkan
+    print("FastAPI Guard tidak aktif di mode development")
 
 # Required: Set decorator handler on app state
 app.state.guard_decorator = guard_deco

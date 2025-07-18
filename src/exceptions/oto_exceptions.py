@@ -35,3 +35,16 @@ class OtoException:
                 content=f"status={self.oto_status}&message={self.context['message']}",
                 status_code=self.status_code,
             )
+
+    class InvalidTrxCombinationError(OtoExceptionError):
+        """Exception untuk kombinasi field transaksi yang tidak valid (pin/pass/sign)."""
+
+        def __init__(self, message: str):
+            super().__init__(status_code=422, context={"message": message})
+            self.oto_status = 422
+
+        def render(self):
+            return PlainTextResponse(
+                content=f"status={self.oto_status}&message={self.context['message']}",
+                status_code=self.status_code,
+            )
