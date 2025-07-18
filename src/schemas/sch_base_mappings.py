@@ -19,4 +19,4 @@ class ProductModuleMappingList(BaseModel):
     )
 
 
-# NOTE: field validator dan model validator nanti aja nyusul ya, semntara karena pake yaml , jadi belum perlu , tapi yg mandatory mah getter
+# NOTE: field validator dan model validator nanti aja nyusul ya, semntara karena pake yaml , jadi belum perlu , tapi yg mandatory mah getter, wajib beresin nanti ini ngaruh banget ke hot reload
