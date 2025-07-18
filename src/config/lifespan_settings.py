@@ -4,7 +4,12 @@ import aiofiles
 import yaml
 from fastapi import FastAPI
 
-from src.config.base_settings import settings
+from src.config.app_config import settings
+from src.repos.rep_mapping import MappingRepoYaml
+from src.repos.rep_member import MemberRepoYaml
+from src.repos.rep_module import ModuleRepoYaml
+from src.repos.rep_product import ProductRepoYaml
+from src.services.srv_watchdog import watch_yaml_repo
 from src.utils.mylogger import logger
 
 EXAMPLES = {
@@ -67,8 +72,8 @@ EXAMPLES = {
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):  # noqa: ARG001
-    """Validate YAML files, create example if missing."""
+async def lifespan(app: FastAPI):
+    # Step 1: Buat file contoh jika belum ada
     for name, path in {
         "member_yaml_path": settings.member_yaml_path,
         "module_yaml_path": settings.module_yaml_path,
@@ -76,8 +81,7 @@ async def lifespan(app: FastAPI):  # noqa: ARG001
         "mapping_yaml_path": settings.mapping_yaml_path,
     }.items():
         if not path.exists():
-            logger.error(f"[Startup Error] File '{name}' tidak ditemukan: {path}")
-            # Create example file
+            logger.warning(f"[Startup] File '{name}' tidak ditemukan: {path}")
             example = EXAMPLES.get(name)
             if example:
                 async with aiofiles.open(path, "w") as f:
@@ -85,7 +89,29 @@ async def lifespan(app: FastAPI):  # noqa: ARG001
                         example, sort_keys=False, allow_unicode=True
                     )
                     await f.write(yaml_str)
-                logger.info(f"Created example YAML for '{name}' at {path}")
+                logger.info(f"[Startup] File contoh '{name}' dibuat di {path}")
             else:
-                logger.warning(f"No example available for '{name}'")
+                logger.warning(f"[Startup] Tidak ada example YAML untuk '{name}'")
+
+    # Step 2: Load repo + aktifkan watcher
+    member_repo = await MemberRepoYaml.create(settings.member_yaml_path)
+    module_repo = await ModuleRepoYaml.create(settings.module_yaml_path)
+    product_repo = await ProductRepoYaml.create(settings.product_yaml_path)
+    mapping_repo = await MappingRepoYaml.create(settings.mapping_yaml_path)
+
+    watch_yaml_repo(member_repo)
+    watch_yaml_repo(module_repo)
+    watch_yaml_repo(product_repo)
+    watch_yaml_repo(mapping_repo)
+
+    # Simpan ke app.state (optional, kalau mau dipakai di route)
+    app.state.repos = {
+        "member": member_repo,
+        "module": module_repo,
+        "product": product_repo,
+        "mapping": mapping_repo,
+    }
+
+    logger.info("[Startup] Semua repo siap dan Watchdog aktif ✅")
+
     yield

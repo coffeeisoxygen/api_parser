@@ -1,20 +1,18 @@
 import uvicorn
-from fastapi import FastAPI, Request
-from fastapi.exceptions import RequestValidationError
+from fastapi import FastAPI
 from guard import SecurityDecorator, SecurityMiddleware
-from starlette.requests import Request
-from starlette.responses import PlainTextResponse
 
-from src.config.base_settings import settings
+from src.config.app_config import settings
+from src.config.reg_exceptions import register_exception_handlers
+from src.config.lifespan_settings import lifespan
 from src.config.log_settings import initialize_logging
 from src.config.security_settings import SecurityConfig
 from src.config.server_settings import get_uvicorn_config
-from src.exceptions.oto_exceptions import OtoExceptionError
 from src.router.transaction import router as transaction_router
 
 # Initialize logging configuration
 initialize_logging()
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 config = SecurityConfig()
 
 # Create decorator instance
@@ -30,33 +28,9 @@ async def read_root():
 
 app.include_router(transaction_router)
 
+# Register exception handlers
+register_exception_handlers(app)
 
-@app.exception_handler(OtoExceptionError)
-async def oto_exception_handler(request: Request, exc: OtoExceptionError):
-    return exc.render()
-
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    # Gabungkan semua pesan error
-    messages = []
-    for err in exc.errors():
-        loc = ".".join(str(l) for l in err["loc"])
-        msg = err["msg"]
-        messages.append(f"{loc}: {msg}")
-    message = "; ".join(messages)
-    # Format plain text OtomaX
-    return PlainTextResponse(content=f"status=422&message={message}", status_code=422)
-
-
-# NOTE : aktifin mereka kalau nanti udah punya FE
-# @app.exception_handler(AppExceptionError)
-# async def app_exception_handler_fastapi(request: Request, exc: AppExceptionError):
-#     return app_exception_handler(exc)
-
-# @app.exception_handler(ItemNotFoundError)
-# async def item_not_found_handler(request: Request, exc: ItemNotFoundError):
-#     return app_exception_handler(exc)
 # Add global middleware
 if settings.app_mode != "development":
     app.add_middleware(SecurityMiddleware, config=config)

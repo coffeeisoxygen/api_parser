@@ -1,6 +1,6 @@
 """settings for server configuration."""
 
-from src.config.base_settings import settings
+from src.config.app_config import settings
 from src.utils.mylogger import LogContext, logger
 
 

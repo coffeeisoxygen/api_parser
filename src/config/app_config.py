@@ -12,7 +12,7 @@ class RegistryFileNotFoundError(FileNotFoundError):
         super().__init__(f"[Startup Error] File '{name}' tidak ditemukan: {path}")
 
 
-class AppSettings(BaseSettings):
+class AppConfiguration(BaseSettings):
     app_host: str = Field(default="127.0.0.1", description="Host aplikasi")
     app_port: int = Field(default=8000, description="Port aplikasi")
     app_log_level: str = Field(default="info", description="Level log aplikasi")
@@ -50,4 +50,4 @@ class AppSettings(BaseSettings):
                 raise RegistryFileNotFoundError(name, path)
 
 
-settings = AppSettings()
+settings = AppConfiguration()

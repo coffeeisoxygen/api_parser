@@ -2,11 +2,11 @@
 
 from venv import logger
 
-from src.config.base_settings import AppSettings
+from src.config.app_config import AppConfiguration
 from src.utils.mylogger import LogConfig, patch_uvicorn_loggers, setup_logging
 
 # Load settings from the AppSettings
-settings = AppSettings()
+settings = AppConfiguration()
 # Configure logging using settings
 log_config = LogConfig(
     level=settings.app_log_level.upper(),

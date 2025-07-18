@@ -1,5 +1,5 @@
 # src/services/srv_module.py
-from src.config.base_settings import settings
+from src.config.app_config import settings
 from src.exceptions.oto_exceptions import OtoException, OtoExceptionError
 from src.repos.rep_module import ModuleRepoYaml
 from src.services.srv_base import AppService

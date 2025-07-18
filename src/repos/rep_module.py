@@ -7,7 +7,7 @@ Made by Hasan Maki and ChatGPT
 
 from pathlib import Path
 
-from src.config.base_settings import settings
+from src.config.app_config import settings
 from src.repos.base_repo import BaseYamlRepo
 from src.schemas.sch_base_modules import Module
 

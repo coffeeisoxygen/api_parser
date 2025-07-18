@@ -5,7 +5,7 @@ dengan di buat repos ketika kita akan berpindah ke database tidak terlalu banyak
 
 from pathlib import Path
 
-from src.config.base_settings import settings
+from src.config.app_config import settings
 from src.repos.base_repo import BaseYamlRepo
 from src.schemas.sch_base_member import Member
 
