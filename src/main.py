@@ -6,7 +6,10 @@ from src.config.app_config import settings
 from src.config.lifespan_config import lifespan
 from src.config.log_settings import initialize_logging
 from src.config.server_settings import get_uvicorn_config
-from src.exceptions.exception_handlers import global_exception_handler
+from src.exceptions.exception_handlers import (
+    RequestValidationError,
+    global_exception_handler,
+)
 from src.guard_config.sec_config import config, guard_deco
 from src.router.router_handler import register_debug_routers
 from src.router.transaction import router as transaction_router
@@ -14,6 +17,7 @@ from src.router.transaction import router as transaction_router
 initialize_logging()
 app = FastAPI(lifespan=lifespan)
 app.add_exception_handler(Exception, global_exception_handler)
+app.add_exception_handler(RequestValidationError, global_exception_handler)
 
 
 @app.get("/")

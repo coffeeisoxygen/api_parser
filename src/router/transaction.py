@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from src.config.log_settings import logger
-from src.dependencies import DepValidModule, DepWhitelist
+from src.dependencies import DepValidMember, DepValidModule, DepWhitelist
 from src.schemas.sch_transaction import TrxRequest
 
 router = APIRouter()
@@ -21,12 +21,14 @@ async def trx_default(_: DepWhitelist, query: TrxRequest = Depends()):  # noqa: 
 async def trx_with_module(
     _: DepWhitelist,
     module: DepValidModule,
+    member: DepValidMember,  # <-- ini dia bro
     query: TrxRequest = Depends(),  # noqa: B008
 ):
-    logger.info(f"TRX With Module: {module.moduleid}")
+    logger.info(f"TRX With Module: {module.moduleid} & Member: {member.memberid}")
     return {
         "module_code": module.moduleid,
+        "memberid": member.memberid,
         "query": query.model_dump(),
         "status": "success",
-        "message": "Transaction handled with module",
+        "message": "Transaction handled with module + member",
     }
