@@ -91,6 +91,7 @@ lint.ignore = [
     "ANN204",  # __init__ return
     "ANN002",  # *args
     "ANN003",  # **kwargs
+    "B008"
 ]
 
 [tool.ruff.lint.pydocstyle]
