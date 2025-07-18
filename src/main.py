@@ -8,7 +8,7 @@ from src.config.log_settings import initialize_logging
 from src.config.server_settings import get_uvicorn_config
 from src.exceptions.exception_handlers import global_exception_handler
 from src.guard_config.sec_config import config, guard_deco
-from src.router import debug_router
+from src.router.router_handler import register_debug_routers
 from src.router.transaction import router as transaction_router
 
 initialize_logging()
@@ -24,14 +24,14 @@ async def read_root():
 
 
 app.include_router(transaction_router)
-app.include_router(debug_router.router)
+register_debug_routers(app)
 
 # Add global middleware
 if settings.app_mode != "development":
     app.add_middleware(SecurityMiddleware, config=config)
 else:
     # Bisa log info bahwa guard tidak diaktifkan
-    print("FastAPI Guard tidak aktif di mode development")
+    print("FastAPI Guard tidak aktif di mode development")  # noqa: T201
 
 # Required: Set decorator handler on app state
 app.state.guard_decorator = guard_deco
