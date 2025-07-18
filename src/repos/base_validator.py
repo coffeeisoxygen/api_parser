@@ -3,10 +3,7 @@
 from collections.abc import Callable, Iterable
 from typing import Any
 
-
-class DuplicateItemError(Exception):
-    def __init__(self, name: str, key: Any):
-        super().__init__(f"Duplicate {name}: {key}")
+from src.exceptions.repo_exceptions import DuplicateItemError
 
 
 def validate_unique(

@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 
 from src.config.base_settings import settings
-from src.repos.rep_helper import validate_unique
+from src.repos.base_validator import validate_unique
 from src.schemas.sch_base_products import Product
 from src.utils.mylogger import logger
 
