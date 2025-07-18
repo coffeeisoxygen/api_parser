@@ -1,11 +1,11 @@
 import uvicorn
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from guard import SecurityDecorator, SecurityMiddleware
 
 from src.config.log_settings import initialize_logging
 from src.config.security_settings import SecurityConfig
 from src.config.server_settings import get_uvicorn_config
-from src.dependencies.ip_guard import ip_whitelist_guard
+from src.router.transaction import router as transaction_router
 
 # Initialize logging configuration
 initialize_logging()
@@ -23,10 +23,7 @@ async def read_root():
     return {"message": "Hello, World!"}
 
 
-@app.get("/trx", dependencies=[Depends(ip_whitelist_guard)])
-async def handle_trx():
-    return {"status": "success"}
-
+app.include_router(transaction_router)
 
 # Add global middleware
 app.add_middleware(SecurityMiddleware, config=config)
