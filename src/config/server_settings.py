@@ -9,7 +9,7 @@ def get_uvicorn_config():
     config = {
         "host": settings.app_host,
         "port": settings.app_port,
-        "log_level": settings.app_log_level,
+        "log_level": "INFO",
         "reload": settings.app_mode == "development",
     }
     with LogContext("Load Uvicorn config", level="INFO"):
