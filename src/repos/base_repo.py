@@ -16,11 +16,7 @@ from typing import Any, Generic, TypeVar
 import aiofiles
 import yaml
 
-from src.exceptions.repo_exceptions import (
-    ItemNotFoundError,
-    ModelNotSetError,
-    YamlFileNotFoundError,
-)
+from src.exceptions.repo_exceptions import YamlFileNotFoundError
 from src.repos.base_validator import validate_unique
 from src.utils.mylogger import logger
 
