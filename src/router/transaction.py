@@ -2,12 +2,8 @@
 
 from fastapi import APIRouter, Depends
 from src.config.log_settings import logger
-from src.dependencies import (
-    DepValidMember,
-    DepValidModule,
-    DepValidProduct,
-    DepWhitelist,
-)
+from src.dependencies import DepValidMember, DepValidModule, DepWhitelist
+from src.dependencies.deps_product import DepValidProduct
 from src.schemas.sch_transaction import TrxRequest
 
 router = APIRouter()

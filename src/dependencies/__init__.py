@@ -1,3 +1,4 @@
+from src.dependencies.dep_mapping import DepValidMapping
 from src.dependencies.deps_member import DepValidMember
 from src.dependencies.deps_module import DepValidModule
 from src.dependencies.deps_product import DepValidProduct
@@ -10,6 +11,7 @@ from src.dependencies.deps_whitelist import DepWhitelist
 
 # --- biar bisa auto-import dari dependencies ---
 __all__ = [
+    "DepValidMapping",
     "DepValidMember",
     "DepValidModule",
     "DepValidProduct",
