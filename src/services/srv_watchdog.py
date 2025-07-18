@@ -13,12 +13,12 @@ from src.utils.mylogger import logger
 
 
 class YamlReloadHandler(FileSystemEventHandler):
-    def __init__(self, repo, loop: asyncio.AbstractEventLoop):
+    def __init__(self, repo, loop: asyncio.AbstractEventLoop):  # noqa: ANN001
         self.repo = repo
         self.loop = loop
         self.file_path = str(repo.file_path.resolve())
 
-    def on_modified(self, event):
+    def on_modified(self, event):  # noqa: ANN001
         # Normalisasi dulu kedua path ke Path.resolve()
         src_path = event.src_path
         if isinstance(src_path, bytes):
@@ -43,7 +43,7 @@ class YamlReloadHandler(FileSystemEventHandler):
             logger.warning(f"[YAML Watch] Reload gagal: {e} → pakai data lama")
 
 
-def watch_yaml_repo(repo):
+def watch_yaml_repo(repo):  # noqa: ANN001
     """Aktifkan file watcher untuk satu repo berbasis file YAML."""
     if not hasattr(repo, "file_path"):
         raise AppException.RepoFilePathMissingError()

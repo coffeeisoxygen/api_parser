@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from pydantic import BaseModel, BeforeValidator, Field
+from pydantic import BaseModel, BeforeValidator, Field, IPvAnyAddress
 
 StrFromInt = Annotated[
     str, BeforeValidator(lambda v: str(v) if isinstance(v, int) else v)
@@ -18,7 +18,7 @@ class Member(BaseModel):
     memberid: str = Field(..., description="ID unik member")
     password: str = Field(..., description="Password member")
     pin: StrFromInt = Field(..., description="PIN member")
-    ip: str = Field(..., description="IP address member")
+    ip: IPvAnyAddress = Field(..., description="IP address member")
     report_url: str | None = Field(None, description="URL untuk report, bisa null")
     allow_no_sign: bool = Field(..., description="Apakah diperbolehkan tanpa sign")
     is_active: bool = Field(default=True, description="Apakah member aktif")
