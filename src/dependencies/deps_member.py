@@ -10,34 +10,28 @@ from src.schemas.sch_transaction import TrxRequest
 
 def _validate_member_from_request(
     request: Request,
-    query: TrxRequest = Depends(),  # ambil param dari query (karena pakai GET)
+    query: TrxRequest = Depends(),  # biarkan FastAPI yang inject  # noqa: B008
 ) -> Member:
     logger = getattr(request.app.state, "logger", None)
     if logger:
         logger.debug(f"VALIDATOR TRIGGERED with query: {query}")
     repo = request.app.state.repos["member"]
     member = repo.get_by_memberid(query.memberid)
-    if logger:
-        logger.debug(f"Member lookup for id '{query.memberid}': {member}")
+    error_msg = None
     if not member:
+        error_msg = f"Member tidak ditemukan: {query.memberid}"
+    elif not member.is_active:
+        error_msg = f"Member tidak aktif: {member.memberid}"
+    elif not (request.client and request.client.host):
+        error_msg = "Tidak dapat mengambil IP client"
+    elif request.client.host != member.ip:
+        error_msg = (
+            f"IP tidak cocok dengan member: {request.client.host} != {member.ip}"
+        )
+    if error_msg:
         if logger:
-            logger.warning("Member tidak ditemukan")
-        raise OtoException.InvalidTrxCombinationError("Member tidak ditemukan")
-    if not member.is_active:
-        if logger:
-            logger.warning("Member tidak aktif")
-        raise OtoException.InvalidTrxCombinationError("Member tidak aktif")
-    if request.client is None or request.client.host is None:
-        if logger:
-            logger.warning("Tidak dapat mengambil IP client")
-        raise OtoException.InvalidTrxCombinationError("Tidak dapat mengambil IP client")
-    client_ip = request.client.host
-    if logger:
-        logger.debug(f"Client IP: {client_ip}, Member IP: {member.ip}")
-    if client_ip != member.ip:
-        if logger:
-            logger.warning("IP tidak cocok dengan member")
-        raise OtoException.InvalidTrxCombinationError("IP tidak cocok dengan member")
+            logger.warning(error_msg)
+        raise OtoException.InvalidTrxCombinationError(error_msg)
     if logger:
         logger.info(f"Member valid: {member.memberid}")
     return member
