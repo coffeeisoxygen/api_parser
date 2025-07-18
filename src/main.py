@@ -1,13 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
-
 from guard import SecurityMiddleware
+
 from src.config.app_config import settings
 from src.config.lifespan_config import lifespan
 from src.config.log_settings import initialize_logging
 from src.config.server_settings import get_uvicorn_config
 from src.exceptions.exception_handlers import global_exception_handler
 from src.guard_config.sec_config import config, guard_deco
+from src.router import debug_router
 from src.router.transaction import router as transaction_router
 
 initialize_logging()
@@ -23,7 +24,7 @@ async def read_root():
 
 
 app.include_router(transaction_router)
-
+app.include_router(debug_router.router)
 
 # Add global middleware
 if settings.app_mode != "development":
