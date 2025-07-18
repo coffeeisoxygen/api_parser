@@ -47,7 +47,7 @@ app.add_middleware(
 
 # Include the Digipos router
 app.include_router(digipos_router)
-app.add_exception_handler(RequestValidationError, validation_exception_handler)
+# app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 
 @app.get("/")

@@ -37,7 +37,7 @@ def digipos_handler(req: DigiposRequest = Depends()):  # noqa: B008, D103
     )
 
 
-@router.exception_handler(RequestValidationError)
+# @router.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Handle validation errors and return a custom plain text response.
 

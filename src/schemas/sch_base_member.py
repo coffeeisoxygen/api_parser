@@ -1,6 +1,12 @@
 """schemas untuk crud member, untuk sekarang kita akan melakukan nya dengan yaml."""
 
-from pydantic import BaseModel, Field
+from typing import Annotated
+
+from pydantic import BaseModel, BeforeValidator, Field
+
+StrFromInt = Annotated[
+    str, BeforeValidator(lambda v: str(v) if isinstance(v, int) else v)
+]
 
 
 class Member(BaseModel):
@@ -11,11 +17,11 @@ class Member(BaseModel):
     }
     memberid: str = Field(..., description="ID unik member")
     password: str = Field(..., description="Password member")
-    pin: str = Field(..., description="PIN member")
+    pin: StrFromInt = Field(..., description="PIN member")
     ip: str = Field(..., description="IP address member")
     report_url: str | None = Field(None, description="URL untuk report, bisa null")
     allow_no_sign: bool = Field(..., description="Apakah diperbolehkan tanpa sign")
     is_active: bool = Field(default=True, description="Apakah member aktif")
 
 
-# NOTE: field validator dan model validator nanti aja nyusul ya, semntara karena pake yaml , jadi belum perlu , tapi yg mandatory mah getter
+PinToStr = Annotated[str, Field(..., description="PIN member")]

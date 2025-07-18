@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings
 
 
 class RegistryFileNotFoundError(FileNotFoundError):
-    def __init__(self, name, path):
+    def __init__(self, name: str, path: Path) -> None:
         super().__init__(f"[Startup Error] File '{name}' tidak ditemukan: {path}")
 
 

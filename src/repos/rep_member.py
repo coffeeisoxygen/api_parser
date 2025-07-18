@@ -102,7 +102,9 @@ class MemberRepoYaml(BaseYamlRepo[Member]):
         Returns:
             list[Member] | None: Daftar anggota yang aktif atau None jika tidak ada. akan di handle di level service untuk none.
         """
-        return [m for m in self._items if m.is_active] or None
+        return [
+            m for m in self._items if getattr(m, "is_active", False) is True
+        ] or None
 
 
 # NOTE: untuk create , update , delete nanti aja nyusul ya, semntara karena pake yaml , jadi belum perlu , tapi yg mandatory mah getter
