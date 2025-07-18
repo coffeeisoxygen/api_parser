@@ -103,6 +103,12 @@ FORMAT_STR = (
     "<level>{message}</level>"
 )
 
+FORMAT_SIMPLE = (
+    "<level>{level: <8}</level> | "
+    "<cyan>{name}:{function}:{line}</cyan> | "
+    "{message}"
+)
+
 
 # === MAIN SETUP ===
 def setup_logging(config: LogConfig):
@@ -118,7 +124,7 @@ def setup_logging(config: LogConfig):
         loguru_logger.add(
             sys.stderr,
             level=config.level.upper(),
-            format=FORMAT_STR,
+            format=FORMAT_SIMPLE,
             colorize=True,
             backtrace=True,
             diagnose=config.diagnose,

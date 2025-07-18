@@ -36,4 +36,24 @@ sequenceDiagram
 - Python >= 3.12 : versi python yang digunakan.
 - FastAPI : untuk membuat API yang cepat dan efisien.
 - Loguru : untuk logging yang lebih baik.
-- Streamlit : untuk membuat UI yang interaktif.
+
+## sementara NO FrontEND dulu , ngga ada Crud by UI
+
+## validation chain
+
+```mermaid
+stateDiagram
+    direction LR
+    [*] --> IP_Whitelist_Check
+    IP_Whitelist_Check --> Member_Check : ✅ IP Valid
+    IP_Whitelist_Check --> Failed : ❌ IP Not Allowed
+
+    Member_Check --> Credential_Check : ✅ Member Found
+    Member_Check --> Failed : ❌ Member Not Found
+
+    Credential_Check --> Success : ✅ Auth OK
+    Credential_Check --> Failed : ❌ Signature / PIN Error
+
+    Success --> [*]
+    Failed --> [*]
+```

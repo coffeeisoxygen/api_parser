@@ -1,3 +1,5 @@
+"""exception ini tuh buat frontend nanti , klo jadi bikin admin panel + database"""
+
 from http import HTTPStatus
 
 from starlette.responses import JSONResponse
