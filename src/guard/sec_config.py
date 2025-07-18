@@ -1,6 +1,4 @@
-from guard.models import SecurityConfig
-
-from guard import SecurityDecorator, SecurityMiddleware
+from guard import SecurityConfig, SecurityDecorator, SecurityMiddleware
 
 
 def get_security_config() -> SecurityConfig:

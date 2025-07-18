@@ -1,13 +1,16 @@
 import uvicorn
 from fastapi import FastAPI
 
-from guard import SecurityMiddleware
 from src.config.app_config import settings
 from src.config.lifespan_config import lifespan
 from src.config.log_settings import initialize_logging
 from src.config.server_settings import get_uvicorn_config
 from src.exceptions.exception_handlers import global_exception_handler
-from src.guard.sec_config import get_guard_decorator, get_security_config
+from src.guard.sec_config import (
+    SecurityMiddleware,
+    get_guard_decorator,
+    get_security_config,
+)
 from src.router.transaction import router as transaction_router
 
 initialize_logging()

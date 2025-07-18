@@ -40,8 +40,9 @@ class OtoException:
             self.oto_status = 404
             self.context["message"] = f"Module '{code}' tidak ditemukan"
 
-    class InvalidTrxCombination(OtoExceptionError):
+    class InvalidTrxCombinationError(OtoExceptionError):
         """Exception yang di-raise ketika kombinasi transaksi tidak valid."""
+
         def __init__(self, message: str):
             super().__init__(422, {"message": message})
             self.oto_status = 422
