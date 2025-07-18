@@ -1,10 +1,11 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from guard import SecurityDecorator, SecurityMiddleware
 
 from src.config.log_settings import initialize_logging
 from src.config.security_settings import SecurityConfig
 from src.config.server_settings import get_uvicorn_config
+from src.exceptions.oto_exceptions import OtoExceptionError
 from src.router.transaction import router as transaction_router
 
 # Initialize logging configuration
@@ -24,6 +25,12 @@ async def read_root():
 
 
 app.include_router(transaction_router)
+
+
+@app.exception_handler(OtoExceptionError)
+async def oto_exception_handler(request: Request, exc: OtoExceptionError):
+    return exc.render()
+
 
 # Add global middleware
 app.add_middleware(SecurityMiddleware, config=config)
