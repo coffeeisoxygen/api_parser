@@ -23,7 +23,7 @@ from src.utils.mylogger import logger
 T = TypeVar("T")
 
 
-class BaseYamlRepo(Generic[T]):
+class BaseYamlRepo(Generic[T]):  # noqa: UP046
     # --- konfigurasi default (override di subclass) ---
     yaml_key: str = "items"  # Key di dalam YAML
     model: type[T] | None = None  # Pydantic model
@@ -98,7 +98,7 @@ class BaseYamlRepo(Generic[T]):
         for item in self._items:
             if key_fn(item) == value:
                 return item
-        raise ItemNotFoundError(self.unique_name, value)
+        raise AppException.ItemNotFoundError(self.unique_name, value)
 
     # ✳️ optional future:
     # async def reload(self): self._items = await self._load_items()

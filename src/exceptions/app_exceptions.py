@@ -52,6 +52,7 @@ class AppException:
 
     class MemberNotFoundError(AppExceptionError):
         """Member tidak ditemukan berdasarkan ID."""
+
         def __init__(self, member_id: str):
             super().__init__(
                 HTTPStatus.NOT_FOUND,
@@ -60,14 +61,27 @@ class AppException:
 
     class YamlFileNotFoundError(AppExceptionError):
         """YAML file tidak ditemukan."""
+
         def __init__(self, path: str):
             super().__init__(500, {"message": f"YAML file tidak ditemukan: {path}"})
 
     class DuplicateItemError(AppExceptionError):
         """Ada item duplikat pada registry/data."""
+
         def __init__(self, name: str, key: str):
             super().__init__(400, {"message": f"Duplicate {name}: {key}"})
 
+    class ItemNotFoundError(AppExceptionError):
+        """Item tidak ditemukan berdasarkan unique key."""
+
+        def __init__(self, name: str, key: str):
+            super().__init__(
+                404, {"message": f"{name} dengan key '{key}' tidak ditemukan"}
+            )
+            self.unique_name = name
+            self.unique_key = key
+
+    class Module
 
 def app_exception_handler(exc: AppExceptionError):
     """Handler untuk AppExceptionError, mengembalikan JSON response."""
