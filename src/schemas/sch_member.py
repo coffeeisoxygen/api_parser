@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from pydantic import BaseModel, BeforeValidator, Field, IPvAnyAddress
+from pydantic import BaseModel, BeforeValidator, Field, IPvAnyAddress, field_validator
 
 # convert input integer ke string
 StrFromInt = Annotated[
@@ -23,6 +23,13 @@ class Member(BaseModel):
         False, description="Apakah transaksi tanpa tanda tangan diizinkan"
     )
     is_active: bool = Field(default=True, description="Status aktif anggota")
+
+    @field_validator("pin", "password", mode="before")
+    @classmethod
+    def int_to_str(cls, v):
+        if isinstance(v, int):
+            return str(v)
+        return v
 
     def model_dump(self, *args, **kwargs):
         data = super().model_dump(*args, **kwargs)
