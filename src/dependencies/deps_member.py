@@ -17,6 +17,11 @@ def _validate_member_from_request(
         logger.debug(f"VALIDATOR TRIGGERED with query: {query}")
     repo = request.app.state.repos["member"]
     member = repo.get_by_memberid(query.memberid)
+    if logger:
+        client_ip = request.client.host if request.client else None
+        logger.info(
+            f"Client IP: {client_ip!r} vs Member IP: {getattr(member, 'ip', None)!r}"
+        )
     error_msg = None
     if not member:
         error_msg = f"Member tidak ditemukan: {query.memberid}"
@@ -24,7 +29,7 @@ def _validate_member_from_request(
         error_msg = f"Member tidak aktif: {member.memberid}"
     elif not (request.client and request.client.host):
         error_msg = "Tidak dapat mengambil IP client"
-    elif request.client.host != member.ip:
+    elif str(request.client.host) != str(member.ip):
         error_msg = (
             f"IP tidak cocok dengan member: {request.client.host} != {member.ip}"
         )
