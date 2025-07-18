@@ -13,6 +13,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, Generic, TypeVar
 
+import aiofiles
 import yaml
 
 from src.exceptions.repo_exceptions import (
@@ -35,13 +36,17 @@ class BaseYamlRepo(Generic[T]):
 
     def __init__(self, file_path: Path):
         self.file_path = Path(file_path)
-        self._items = self._load_items()
+        self._items: list[T] = []  # Inisialisasi kosong, isi di method async
 
-        # ✳️ future: bisa tambahin self._cache_timestamp = time.time()
-        # ✳️ future: bisa tambahin watchdog trigger reload()
+    @classmethod
+    async def create(cls, file_path: Path) -> "BaseYamlRepo[T]":
+        self = cls.__new__(cls)
+        self.file_path = Path(file_path)
+        self._items = await self._load_items()
+        return self
 
-    def _load_items(self) -> list[T]:
-        """Load YAML dan validasi item.
+    async def _load_items(self) -> list[T]:
+        """Load YAML secara async dan validasi item.
 
         Raises:
             YamlFileNotFoundError: Jika file YAML tidak ditemukan.
@@ -53,8 +58,9 @@ class BaseYamlRepo(Generic[T]):
             raise YamlFileNotFoundError(str(self.file_path))
 
         try:
-            with self.file_path.open("r") as f:
-                data = yaml.safe_load(f) or {}
+            async with aiofiles.open(self.file_path) as f:
+                content = await f.read()
+                data = yaml.safe_load(content) or {}
 
             raw_items = data.get(self.yaml_key, [])
             if self.unique_key_fn:
@@ -99,4 +105,4 @@ class BaseYamlRepo(Generic[T]):
         raise ItemNotFoundError(self.unique_name, value)
 
     # ✳️ optional future:
-    # def reload(self): self._items = self._load_items()
+    # async def reload(self): self._items = await self._load_items()
