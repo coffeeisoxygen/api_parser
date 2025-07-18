@@ -26,12 +26,23 @@ class OtoExceptionError(AppExceptionError):
 
 class OtoException:
     class ModuleNotFoundError(OtoExceptionError):
+        """Exception yang di-raise ketika modul tidak ditemukan.
+
+        Exception ini digunakan untuk menandai bahwa modul yang diminta
+        tidak dapat ditemukan dalam sistem.
+
+        Args:
+            OtoExceptionError (_type_): Kelas dasar untuk exception OtomaX.
+        """
+
         def __init__(self, code: str):
             super().__init__(404, {"code": code})
             self.oto_status = 404
             self.context["message"] = f"Module '{code}' tidak ditemukan"
 
     class InvalidTrxCombination(OtoExceptionError):
+        """Exception yang di-raise ketika kombinasi transaksi tidak valid."""
         def __init__(self, message: str):
             super().__init__(422, {"message": message})
             self.oto_status = 422
+            self.context["message"] = message
