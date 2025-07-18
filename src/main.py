@@ -3,18 +3,19 @@ from fastapi import FastAPI
 from guard import SecurityDecorator, SecurityMiddleware
 
 from src.config.app_config import settings
-from src.config.reg_exceptions import register_exception_handlers
 from src.config.lifespan_settings import lifespan
 from src.config.log_settings import initialize_logging
+from src.config.reg_exceptions import register_exception_handlers
 from src.config.security_settings import SecurityConfig
 from src.config.server_settings import get_uvicorn_config
+from src.exceptions.exception_handlers import global_exception_handler
 from src.router.transaction import router as transaction_router
 
 # Initialize logging configuration
 initialize_logging()
 app = FastAPI(lifespan=lifespan)
 config = SecurityConfig()
-
+app.add_exception_handler(Exception, global_exception_handler)
 # Create decorator instance
 guard_deco = SecurityDecorator(config)
 
