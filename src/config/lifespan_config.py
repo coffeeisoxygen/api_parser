@@ -32,7 +32,7 @@ EXAMPLES = {
                 "name": "ExampleModule",
                 "code": "EXMOD",
                 "description": "Example module",
-                "base_url": "http://localhost/",
+                "base_url": "http://127.0.0.1:8000/",
                 "timeout": 5,
                 "method": "GET",
                 "retry": 3,
@@ -73,6 +73,7 @@ EXAMPLES = {
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Lifespan event handler for FastAPI to initialize repositories and watch files."""
     # Step 1: Buat file contoh jika belum ada
     for name, path in {
         "member_yaml_path": settings.member_yaml_path,
