@@ -7,7 +7,8 @@ from src.utils.mylogger import logger
 
 
 # Inject service (bisa diubah jadi singleton jika perlu)
-def get_whitelist_service():
+def get_whitelist_service() -> WhitelistIPService:
+    """Get a list of whitlist member and modules for accsesing spesific route."""
     member_repo = MemberRepoYaml()
     module_repo = ModuleRepoYaml()
     return WhitelistIPService(member_repo, module_repo)
@@ -15,7 +16,8 @@ def get_whitelist_service():
 
 # Actual validator (langsung dijalankan sebagai dependency)
 def ip_whitelist_guard(
-    request: Request, service: WhitelistIPService = Depends(get_whitelist_service)  # noqa: B008
+    request: Request,
+    service: WhitelistIPService = Depends(get_whitelist_service),  # noqa: B008
 ):
     if request.client is None:
         raise HTTPException(status_code=400, detail="Tidak dapat menentukan IP client")
