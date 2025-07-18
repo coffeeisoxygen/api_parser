@@ -2,6 +2,7 @@
 
 import asyncio
 import threading
+from datetime import datetime
 from pathlib import Path
 
 from watchdog.events import FileSystemEventHandler
@@ -31,10 +32,14 @@ class YamlReloadHandler(FileSystemEventHandler):
     async def _safe_reload(self):
         try:
             new_items = await self.repo._load_items()
-            self.repo._items = new_items
+            self.repo._items.clear()  # kosongin dulu
+            self.repo._items.extend(new_items)  # masukin item baru yg valid
+            self.repo.last_loaded_at = datetime.now()
+            self.repo.invalid_count = 0
             logger.success(f"[YAML Watch] Reload sukses: {self.file_path}")
         except Exception as e:
-            logger.exception(f"[YAML Watch] Reload gagal: {e} — tetap pakai data lama")
+            self.repo.invalid_count += 1  # atau simpan detail error
+            logger.warning(f"[YAML Watch] Reload gagal: {e} → pakai data lama")
 
 
 def watch_yaml_repo(repo):
