@@ -1,5 +1,6 @@
 from src.dependencies.deps_member import DepValidMember
 from src.dependencies.deps_module import DepValidModule
+from src.dependencies.deps_product import DepValidProduct
 from src.dependencies.deps_signature import DepValidSignature
 from src.dependencies.deps_whitelist import DepWhitelist
 
@@ -8,4 +9,10 @@ from src.dependencies.deps_whitelist import DepWhitelist
 # ValidModuleDep = Depends(DepValidModule)  # Hapus juga jika DepValidModule juga Annotated
 
 # --- biar bisa auto-import dari dependencies ---
-__all__ = ["DepValidMember", "DepValidModule", "DepValidSignature", "DepWhitelist"]
+__all__ = [
+    "DepValidMember",
+    "DepValidModule",
+    "DepValidProduct",
+    "DepValidSignature",
+    "DepWhitelist",
+]
