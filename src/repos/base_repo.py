@@ -16,7 +16,7 @@ from typing import Any, Generic, TypeVar
 import aiofiles
 import yaml
 
-from src.exceptions.repo_exceptions import YamlFileNotFoundError
+from src.exceptions.app_exceptions import AppException
 from src.repos.base_validator import validate_unique
 from src.utils.mylogger import logger
 
@@ -51,7 +51,7 @@ class BaseYamlRepo(Generic[T]):
         """
         if not self.file_path.exists():
             logger.error(f"[YAML Repo] File tidak ditemukan: {self.file_path}")
-            raise YamlFileNotFoundError(str(self.file_path))
+            raise AppException.YamlFileNotFoundError(str(self.file_path))
 
         try:
             async with aiofiles.open(self.file_path) as f:
@@ -67,7 +67,7 @@ class BaseYamlRepo(Generic[T]):
             )
 
             if self.model is None:
-                raise ModelNotSetError()
+                raise AppException.ModelNotSetError()
             return [self.model(**item) for item in raw_items]
         except Exception:
             logger.exception(f"[YAML Repo] Gagal load dari {self.file_path}")
