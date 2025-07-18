@@ -32,6 +32,14 @@ async def oto_exception_handler(request: Request, exc: OtoExceptionError):
     return exc.render()
 
 
+# NOTE : aktifin mereka kalau nanti udah punya FE
+# @app.exception_handler(AppExceptionError)
+# async def app_exception_handler_fastapi(request: Request, exc: AppExceptionError):
+#     return app_exception_handler(exc)
+
+# @app.exception_handler(ItemNotFoundError)
+# async def item_not_found_handler(request: Request, exc: ItemNotFoundError):
+#     return app_exception_handler(exc)
 # Add global middleware
 app.add_middleware(SecurityMiddleware, config=config)
 
