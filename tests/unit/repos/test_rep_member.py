@@ -1,5 +1,6 @@
 import pytest
 import yaml
+from pydantic import ValidationError
 from src.exceptions.repo_exceptions import DuplicateItemError
 from src.repos.rep_member import MemberRepoYaml
 from src.schemas.sch_base_member import Member
@@ -125,8 +126,8 @@ def test_member_with_empty_ip(tmp_path):
     test_file = tmp_path / "members.yaml"
     with open(test_file, "w") as f:
         yaml.safe_dump(yaml_data, f)
-    repo = MemberRepoYaml(file_path=test_file)
-    assert repo.get_list_memberip() == []
+    with pytest.raises(ValidationError):
+        MemberRepoYaml(file_path=test_file)
 
 
 @pytest.mark.unit

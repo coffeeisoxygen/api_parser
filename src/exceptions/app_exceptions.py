@@ -1,4 +1,4 @@
-"""exception ini tuh buat frontend nanti , klo jadi bikin admin panel + database"""
+"""exception ini tuh buat frontend nanti , klo jadi bikin admin panel + database."""
 
 from http import HTTPStatus
 

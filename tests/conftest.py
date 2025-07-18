@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pytest
 from loguru import logger
+from pydantic import ValidationError
+from src.exceptions.repo_exceptions import DuplicateItemError
 from src.repos.rep_mapping import MappingRepoYaml
 from src.repos.rep_member import MemberRepoYaml
 from src.repos.rep_module import ModuleRepoYaml
@@ -77,3 +79,21 @@ def dummy_mapping_path() -> Path:
 @pytest.fixture()
 def mapping_repo(dummy_mapping_path) -> MappingRepoYaml:
     return MappingRepoYaml(file_path=dummy_mapping_path)
+
+
+@pytest.fixture
+def expect_validation_error():
+    def _expect(func, *args, **kwargs):
+        with pytest.raises(ValidationError):
+            func(*args, **kwargs)
+
+    return _expect
+
+
+@pytest.fixture
+def expect_duplicate_error():
+    def _expect(func, *args, **kwargs):
+        with pytest.raises(DuplicateItemError):
+            func(*args, **kwargs)
+
+    return _expect
