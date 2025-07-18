@@ -25,6 +25,15 @@ class ProductRepoYaml(BaseYamlRepo[Product]):
     def get_by_code(self, code: str) -> Product | None:
         return next((p for p in self._items if p.code == code), None)
 
-    def get_listprovider(self) -> list[str]:
+    def get_list_product(self) -> list[Product]:
+        return list(self._items)
+
+    def get_list_active_only(self) -> list[Product]:
+        return [p for p in self._items if getattr(p, "is_active", False)]
+
+    def get_by_provider(self, provider: str) -> list[Product]:
+        return [p for p in self._items if p.provider == provider]
+
+    def get_list_provider(self) -> list[str]:
         """Get list of unique providers from products."""
         return list({p.provider for p in self._items if p.provider})

@@ -36,3 +36,15 @@ class MappingRepoYaml(BaseYamlRepo[ProductModuleMapping]):
 
     def get_active(self) -> list[ProductModuleMapping]:
         return [m for m in self._items if m.is_active]
+
+    def get_by_product(self, product_code: str) -> list[ProductModuleMapping]:
+        return [m for m in self._items if m.product_code == product_code]
+
+    def get_by_module(self, module_code: str) -> list[ProductModuleMapping]:
+        return [m for m in self._items if m.module_code == module_code]
+
+    def get_list_active_only(self) -> list[ProductModuleMapping]:
+        return [m for m in self._items if getattr(m, "is_active", False)]
+
+    def get_list_mapping(self) -> list[ProductModuleMapping]:
+        return list(self._items)
