@@ -10,6 +10,7 @@ from src.dependencies import (
     DepValidSignature,
     DepWhitelist,
 )
+from src.exceptions.oto_exceptions import PlainTextResponse
 from src.schemas.sch_transaction import TrxRequest
 from src.services.accept_response import ResponseHandler
 from src.services.send_request import RequestForwarder
@@ -53,15 +54,16 @@ async def trx_with_module(
         logger.warning("[TRX] Parsed response bukan dict, trimming dilewati.")
         trimmed_response = ""
 
-    return {
-        "module_code": module.moduleid,
-        "memberid": member.memberid,
-        "product_code": product.code,
-        "signature": valid_signature,
-        "query": query.model_dump(),
-        "final_query": final_query,
-        "response": parsed_response,
-        "trimmed_response": trimmed_response,
-        "status": "success",
-        "message": "Transaction handled with full validation and query built",
-    }
+    # return {
+    #     "module_code": module.moduleid,
+    #     "memberid": member.memberid,
+    #     "product_code": product.code,
+    #     "signature": valid_signature,
+    #     "query": query.model_dump(),
+    #     "final_query": final_query,
+    #     "response": parsed_response,
+    #     "trimmed_response": trimmed_response,
+    #     "status": "success",
+    #     "message": "Transaction handled with full validation and query built",
+    # }
+    return PlainTextResponse(content=trimmed_response)
