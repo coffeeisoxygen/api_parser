@@ -5,12 +5,12 @@ from guard import SecurityMiddleware
 from src.config.app_config import settings
 from src.config.lifespan_config import lifespan
 from src.config.log_settings import initialize_logging
+from src.config.sec_config import config, guard_deco
 from src.config.server_settings import get_uvicorn_config
 from src.exceptions.exception_handlers import (
     RequestValidationError,
     global_exception_handler,
 )
-from src.config.sec_config import config, guard_deco
 from src.router.router_handler import register_debug_routers
 from src.router.transaction import router as transaction_router
 
@@ -21,7 +21,7 @@ app.add_exception_handler(RequestValidationError, global_exception_handler)
 
 
 @app.get("/")
-@guard_deco.require_ip(whitelist=["192.168.1.0/24", "127.0.0.1/24", "10.2.0.1"])
+@guard_deco.require_ip(whitelist=config.whitelist)
 async def read_root():
     """Root endpoint for health check and welcome message."""
     return {"message": "Hello, World!"}
