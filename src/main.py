@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.config.lifespan_config import lifespan
 from src.config.log_settings import initialize_logging
@@ -13,6 +14,16 @@ from src.router.transaction import router as transaction_router
 
 initialize_logging()
 app = FastAPI(lifespan=lifespan)
+
+# Setup CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Ganti sesuai kebutuhan, misal: ["http://localhost", "https://yourdomain.com"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.add_exception_handler(Exception, global_exception_handler)
 app.add_exception_handler(RequestValidationError, global_exception_handler)
 
