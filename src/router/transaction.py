@@ -11,6 +11,8 @@ from src.dependencies import (
     DepWhitelist,
 )
 from src.schemas.sch_transaction import TrxRequest
+from src.services.accept_response import ResponseHandler
+from src.services.send_request import RequestForwarder
 from src.services.srv_query_builder import build_final_query
 
 router = APIRouter()
@@ -34,14 +36,25 @@ async def trx_with_module(
     logger.info(f"[TRX] Raw query: {query.model_dump()}")
 
     logger.info("[FORWARD_TEST] Membangun final query...")
+    # lagi bangun query
     final_query = build_final_query(request, module, valid_mapping, query)
+    # forward ke target URL
+    logger.info(f"[TRX] Final query: {final_query}")
+    # Forward
+    forwarder = RequestForwarder(module)
+    raw_response = await forwarder.send(final_query)
+
+    # Parse
+    parsed_response = ResponseHandler.parse(raw_response)
 
     return {
         "module_code": module.moduleid,
         "memberid": member.memberid,
         "product_code": product.code,
+        "signature": valid_signature,
         "query": query.model_dump(),
         "final_query": final_query,
+        "response": parsed_response,
         "status": "success",
         "message": "Transaction handled with full validation and query built",
     }
