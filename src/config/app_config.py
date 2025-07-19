@@ -30,47 +30,6 @@ class AppConfiguration(BaseSettings):
         default=Path("registry/mappings.yaml"), description="Path file mapping registry"
     )
 
-    # Security config
-    whitelist: str = Field(
-        default="127.0.0.1,::1,192.168.1.1,2001:db8::1",
-        description="IP whitelist, comma separated",
-    )
-    blacklist: str = Field(
-        default="10.0.0.1,2001:db8::2", description="IP blacklist, comma separated"
-    )
-    blocked_user_agents: str = Field(
-        default="curl,wget", description="Blocked user agents, comma separated"
-    )
-    auto_ban_threshold: int = Field(default=5, description="Auto ban threshold")
-    auto_ban_duration: int = Field(
-        default=86400, description="Auto ban duration in seconds"
-    )
-    custom_log_file: str = Field(
-        default="security.log", description="Custom log file for security"
-    )
-    rate_limit: int = Field(default=100, description="Rate limit")
-    enforce_https: bool = Field(default=False, description="Enforce HTTPS")
-    enable_cors: bool = Field(default=True, description="Enable CORS")
-    cors_allow_origins: str = Field(
-        default="*", description="CORS allow origins, comma separated"
-    )
-    cors_allow_methods: str = Field(
-        default="GET,POST", description="CORS allow methods, comma separated"
-    )
-    cors_allow_headers: str = Field(
-        default="*", description="CORS allow headers, comma separated"
-    )
-    cors_allow_credentials: bool = Field(
-        default=True, description="CORS allow credentials"
-    )
-    cors_expose_headers: str = Field(
-        default="X-Custom-Header", description="CORS expose headers, comma separated"
-    )
-    cors_max_age: int = Field(default=600, description="CORS max age")
-    block_cloud_providers: str = Field(
-        default="AWS,GCP,Azure", description="Blocked cloud providers, comma separated"
-    )
-
     # model config
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
