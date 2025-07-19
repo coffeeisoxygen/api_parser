@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.config.lifespan_config import lifespan
 from src.config.log_settings import initialize_logging
-from src.config.server_settings import get_uvicorn_config
+from src.config.server_settings import get_uvicorn_config, settings
 from src.exceptions.exception_handlers import (
     RequestValidationError,
     global_exception_handler,
@@ -15,13 +15,20 @@ from src.router.transaction import router as transaction_router
 initialize_logging()
 app = FastAPI(lifespan=lifespan)
 
+
 # Setup CORS
+def parse_cors_list(val: str):
+    if val == "*":
+        return ["*"]
+    return [v.strip() for v in val.split(",") if v.strip()]
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Ganti sesuai kebutuhan, misal: ["http://localhost", "https://yourdomain.com"]
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=parse_cors_list(settings.cors_allow_origins),
+    allow_credentials=bool(settings.cors_allow_credentials),
+    allow_methods=parse_cors_list(settings.cors_allow_methods),
+    allow_headers=parse_cors_list(settings.cors_allow_headers),
 )
 
 app.add_exception_handler(Exception, global_exception_handler)

@@ -30,6 +30,20 @@ class AppConfiguration(BaseSettings):
         default=Path("registry/mappings.yaml"), description="Path file mapping registry"
     )
 
+    # CORS settings
+    cors_allow_origins: str = Field(
+        default="*", description="CORS allow origins, comma separated"
+    )
+    cors_allow_methods: str = Field(
+        default="GET,POST", description="CORS allow methods, comma separated"
+    )
+    cors_allow_headers: str = Field(
+        default="*", description="CORS allow headers, comma separated"
+    )
+    cors_allow_credentials: bool = Field(
+        default=True, description="CORS allow credentials"
+    )
+
     # model config
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
