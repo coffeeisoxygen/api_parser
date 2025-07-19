@@ -30,7 +30,6 @@ config = SecurityConfig(
     cors_allow_credentials=settings.cors_allow_credentials,
     cors_expose_headers=str_to_list(settings.cors_expose_headers),
     cors_max_age=settings.cors_max_age,
-    block_cloud_providers=set(str_to_list(settings.block_cloud_providers)),
 )
 
 guard_deco = SecurityDecorator(config)
