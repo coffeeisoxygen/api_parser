@@ -17,9 +17,9 @@ def generate_signature(memberid, product, dest, refid, pin, password):
 
 if __name__ == "__main__":
     # Contoh data, silakan sesuaikan
-    memberid = "vps"
+    memberid = "MD002"
     product = "CLPDATA"
-    dest = "08123456789"
+    dest = "081295221639"
     refid = "3038936"
     pin = "123456"
     password = "test123"
